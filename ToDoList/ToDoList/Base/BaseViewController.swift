@@ -22,7 +22,7 @@ class BaseViewController: UIViewController {
         super.viewDidLoad()
 
         setupUI()
-        setupViewModel()
+        setupInteractor()
     }
 
     func setupUI() {
@@ -30,7 +30,7 @@ class BaseViewController: UIViewController {
     }
 
     func setupInteractor() {
-        
+
     }
 
     // MARK: - Deinit
