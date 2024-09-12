@@ -11,12 +11,10 @@ import ToDoListInteractor
 import ToDoListEntity
 
 final class Presenter {
-
-    // MARK: - Onboarding
-    static func makeViewController() -> ToDoListViewController {
-//        let assembler = Assembler([OnboardingAssembly()])
+    static func presentToDoListViewController() -> ToDoListViewController {
+        let assembler = Assembler([ToDoListAssembly()])
         let viewController = ToDoListViewController()
-//        viewController.viewModel = assembler.resolver.resolve(IOnboardingViewModel.self)
+        viewController.interactor = assembler.resolver.resolve(IToDoInteractor.self)
         return viewController
     }
 }

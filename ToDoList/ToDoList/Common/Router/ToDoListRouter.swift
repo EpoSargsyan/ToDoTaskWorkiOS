@@ -9,7 +9,9 @@ import UIKit
 import ToDoListInteractor
 import ToDoListEntity
 
-//final class ToDoListRouter: BaseRouter {
-//    static func showToDoViewController(in navigationController: UINavigationController)
-//    }
-//}
+final class ToDoListRouter {
+    static func showToDoListViewController(in navigationController: UINavigationController) {
+        let viewController = Presenter.presentToDoListViewController()
+        navigationController.pushViewController(viewController, animated: true)
+    }
+}

@@ -35,7 +35,7 @@ class ToDoListViewController: BaseViewController {
     override func setupUI() {
         super.setupUI()
 
-        view.backgroundColor = .white
+        view.backgroundColor = .systemGray5
 
         view.addSubview(titleLabel)
         view.addSubview(descriptionLabel)
@@ -79,7 +79,7 @@ class ToDoListViewController: BaseViewController {
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = .black
+        tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
 
         tableView.register(ToDoListTableViewCell.self)
@@ -96,6 +96,26 @@ extension ToDoListViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        UITableViewCell.init()
+        let cell: ToDoListTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 130
+    }
+
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "") { [weak self] action, view, completionHandler in
+            //MARK: Delete from CoreData
+//            guard let topicId = self?.topics[indexPath.row].id else { return }
+//            self?.viewModel?.removeBookmark(by: topicId)
+            tableView.deleteRows(at: [indexPath], with: .none)
+            completionHandler(true)
+        }
+        deleteAction.image = UIImage(systemName: "trash")
+        deleteAction.backgroundColor = UIColor.red
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        configuration.performsFirstActionWithFullSwipe = true
+        return UISwipeActionsConfiguration(actions: [deleteAction])
     }
 }
