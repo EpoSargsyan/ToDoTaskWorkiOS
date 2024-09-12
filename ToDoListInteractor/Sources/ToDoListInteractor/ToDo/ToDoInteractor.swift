@@ -11,19 +11,22 @@ import ToDoListEntity
 import ToDoListNetworking
 
 public protocol IToDoInteractor {
+    var result: ToDoResponseModel? { get }
     var todosSuccessSubject: PassthroughSubject<Bool, Never> { get }
+    var errorEvent: PassthroughSubject<Error, Never> { get }
     func getTodos() async
 }
 
 public class ToDoInteractor: IToDoInteractor {
-
     private let toDoService: IToDoService
-    private let apiClient: IApiCient
+    private let apiClient: IApiClient
 
     public var todosSuccessSubject = PassthroughSubject<Bool, Never>()
+    public var errorEvent = PassthroughSubject<Error, Never>()
+    public var result: ToDoResponseModel?
 
     public init(toDoService: IToDoService,
-                apiClient: IApiCient) {
+                apiClient: IApiClient) {
         self.toDoService = toDoService
         self.apiClient = apiClient
     }
@@ -33,21 +36,11 @@ public class ToDoInteractor: IToDoInteractor {
         let endpoint = TodosEndpoints.getTodos
 
         do {
-            let result = try await apiClient.asyncRequest(endpoint: endpoint,
+            result = try await apiClient.asyncRequest(endpoint: endpoint,
                                                           responseModel: ToDoResponseModel.self)
             todosSuccessSubject.send(true)
         } catch {
-            
+            errorEvent.send(error)
         }
     }
-
-//    let endpoint = StoryEndpoints.getAllStories
-//    do {
-//        _ = try await apiClient.asyncRequest(endpoint: endpoint, responseModel: StoriesResponseModel.self)
-//        isLoading.send(false)
-//        allStoriesSuccessSubject.send(true)
-//    } catch {
-//        errorEvent.send(error)
-//        isLoading.send(false)
-//    }
 }

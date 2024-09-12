@@ -7,14 +7,14 @@
 
 import UIKit
 import SnapKit
+import ToDoListEntity
 
 class ToDoListTableViewCell: UITableViewCell, IReusableView {
     private let itemView = UIView()
 
-    //MARK: Harcnel esi buttona te che
     private let checkBox = UIButton(type: .system)
 
-    private let titleLabel = UILabel(text: "jhacbahjbcasjkbcas",
+    private let titleLabel = UILabel(text: "",
                                      textColor: .black,
                                      font: UIFont.systemFont(ofSize: 20))
     private let descriptionLabel = UILabel(text: "jhacbahjbcasjkbcas",
@@ -27,23 +27,15 @@ class ToDoListTableViewCell: UITableViewCell, IReusableView {
                                     textColor: .gray,
                                     font: UIFont.systemFont(ofSize: 18))
 
-    private let doneLine = UIView()
+    public var isCompleted: Bool = false
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupUI()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    private var width: CGFloat = 0
 
     private func setupUI() {
         self.backgroundColor = .clear
         self.selectionStyle = .none
 
         contentView.addSubview(itemView)
-        itemView.addSubview(doneLine)
         itemView.addSubview(titleLabel)
         itemView.addSubview(descriptionLabel)
         itemView.addSubview(checkBox)
@@ -56,10 +48,16 @@ class ToDoListTableViewCell: UITableViewCell, IReusableView {
         divider.backgroundColor = .systemGray2
         divider.layer.cornerRadius = 1
 
-        checkBox.backgroundColor = .blue
+        if isCompleted {
+            checkBox.backgroundColor = .cyan
+            checkBox.setImage(UIImage(systemName: "checkmark"), for: .normal)
+        } else {
+            checkBox.backgroundColor = .white
+            checkBox.setImage(nil, for: .normal)
+        }
         checkBox.layer.cornerRadius = 12
-
-        doneLine.isHidden = true
+        checkBox.layer.borderWidth = 1
+        checkBox.layer.borderColor = UIColor.gray.cgColor
 
         setupConstraints()
     }
@@ -75,7 +73,7 @@ class ToDoListTableViewCell: UITableViewCell, IReusableView {
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(16)
             make.leading.equalToSuperview().offset(16)
-            make.trailing.equalTo(checkBox.snp.leading).inset(8)
+            make.trailing.equalTo(checkBox.snp.leading).offset(-16)
         }
 
         descriptionLabel.snp.makeConstraints { make in
@@ -102,9 +100,38 @@ class ToDoListTableViewCell: UITableViewCell, IReusableView {
             make.leading.equalToSuperview().offset(16)
             make.trailing.equalToSuperview().inset(16)
         }
+    }
 
-//        doneLine.snp.makeConstraints { make in
-//            make.centerY.equalTo(titleLabel.snp.centerY)
-//        }
+    private func makeButtonAction() {
+        let checkBoxAction = UIAction { [weak self] _ in
+            guard let self = self else { return }
+            //MARK: Poxel hamel bazai mejiny
+            isCompleted.toggle()
+            if isCompleted {
+                titleLabel.strikeThroughText()
+                checkBox.backgroundColor = .cyan
+                checkBox.setImage(UIImage(systemName: "checkmark"), for: .normal)
+            } else {
+                titleLabel.removeStrikethroughText()
+                checkBox.backgroundColor = .white
+                checkBox.setImage(nil, for: .normal)
+            }
+        }
+
+        checkBox.addAction(checkBoxAction, for: .touchUpInside)
+    }
+}
+
+extension ToDoListTableViewCell: ISetupable {
+    typealias SetupModel = ToDoItemPresentationModel
+
+    func setup(with model: ToDoItemPresentationModel) {
+        titleLabel.text = model.todo
+        isCompleted = model.completed
+        if model.completed {
+            titleLabel.strikeThroughText()
+        }
+        setupUI()
+        makeButtonAction()
     }
 }

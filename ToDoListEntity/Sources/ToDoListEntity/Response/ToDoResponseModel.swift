@@ -9,16 +9,16 @@ import Foundation
 
 // MARK: - Welcome
 public struct ToDoResponseModel: Codable {
-    let todos: [TodoDetails]
-    let total: Int
-    let skip: Int
-    let limit: Int
+    public let todos: [TodoDetails]
+    public let total: Int
+    public let skip: Int
+    public let limit: Int
 }
 
 // MARK: - Todo
 public struct TodoDetails: Codable {
-    let id: Int
-    let todo: String
-    let completed: Bool
-    let userID: Int
+    public let id: Int
+    public let todo: String
+    public let completed: Bool
+    public let userId: Int
 }

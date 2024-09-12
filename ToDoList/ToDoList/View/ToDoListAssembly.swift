@@ -9,6 +9,7 @@ import Foundation
 import Swinject
 import SwinjectAutoregistration
 import ToDoListInteractor
+import ToDoListNetworking
 
 final class ToDoListAssembly: Assembly {
     func assemble(container: Swinject.Container) {
@@ -22,5 +23,6 @@ final class ToDoListAssembly: Assembly {
 
     func registerViewModelServices(in container: Container) {
         container.autoregister(IToDoService.self, initializer: ToDoService.init)
+        container.autoregister(IApiClient.self, initializer: ApiClient.init)
     }
 }

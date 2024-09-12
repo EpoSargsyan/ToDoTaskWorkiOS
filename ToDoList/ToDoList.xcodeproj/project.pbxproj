@@ -32,6 +32,8 @@
 		3B5E2A3C2C91C8E7008E5DB8 /* Setupable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A3B2C91C8E7008E5DB8 /* Setupable.swift */; };
 		3B5E2A3E2C91C8FB008E5DB8 /* ReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A3D2C91C8FB008E5DB8 /* ReusableView.swift */; };
 		3B5E2A402C91C947008E5DB8 /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A3F2C91C947008E5DB8 /* TableView.swift */; };
+		3B5E2A482C930044008E5DB8 /* ToDoItemsCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A472C930044008E5DB8 /* ToDoItemsCounter.swift */; };
+		3B5E2A4A2C93984E008E5DB8 /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A492C93984E008E5DB8 /* StackView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +93,8 @@
 		3B5E2A3B2C91C8E7008E5DB8 /* Setupable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setupable.swift; sourceTree = "<group>"; };
 		3B5E2A3D2C91C8FB008E5DB8 /* ReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReusableView.swift; sourceTree = "<group>"; };
 		3B5E2A3F2C91C947008E5DB8 /* TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
+		3B5E2A472C930044008E5DB8 /* ToDoItemsCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoItemsCounter.swift; sourceTree = "<group>"; };
+		3B5E2A492C93984E008E5DB8 /* StackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +155,7 @@
 		3B5E297E2C90522E008E5DB8 /* ToDoList */ = {
 			isa = PBXGroup;
 			children = (
+				3B5E2A432C92FFFE008E5DB8 /* Component */,
 				3B5E2A382C91C72F008E5DB8 /* Base */,
 				3B5E29B82C905F82008E5DB8 /* Extension */,
 				3B5E29E42C91C0D1008E5DB8 /* Common */,
@@ -206,6 +211,7 @@
 				3B5E29B92C905F8F008E5DB8 /* Label.swift */,
 				3B5E29D02C906DAA008E5DB8 /* Button.swift */,
 				3B5E2A3F2C91C947008E5DB8 /* TableView.swift */,
+				3B5E2A492C93984E008E5DB8 /* StackView.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -250,6 +256,22 @@
 				3B5E2A3D2C91C8FB008E5DB8 /* ReusableView.swift */,
 			);
 			path = Base;
+			sourceTree = "<group>";
+		};
+		3B5E2A432C92FFFE008E5DB8 /* Component */ = {
+			isa = PBXGroup;
+			children = (
+				3B5E2A442C93000C008E5DB8 /* ToDoItemsCounter */,
+			);
+			path = Component;
+			sourceTree = "<group>";
+		};
+		3B5E2A442C93000C008E5DB8 /* ToDoItemsCounter */ = {
+			isa = PBXGroup;
+			children = (
+				3B5E2A472C930044008E5DB8 /* ToDoItemsCounter.swift */,
+			);
+			path = ToDoItemsCounter;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -407,7 +429,9 @@
 				3B5E2A3E2C91C8FB008E5DB8 /* ReusableView.swift in Sources */,
 				3B5E29842C90522E008E5DB8 /* ToDoListViewController.swift in Sources */,
 				3B5E29802C90522E008E5DB8 /* AppDelegate.swift in Sources */,
+				3B5E2A4A2C93984E008E5DB8 /* StackView.swift in Sources */,
 				3B5E29822C90522E008E5DB8 /* SceneDelegate.swift in Sources */,
+				3B5E2A482C930044008E5DB8 /* ToDoItemsCounter.swift in Sources */,
 				3B5E298A2C90522E008E5DB8 /* ToDoList.xcdatamodeld in Sources */,
 				3B5E2A3C2C91C8E7008E5DB8 /* Setupable.swift in Sources */,
 			);

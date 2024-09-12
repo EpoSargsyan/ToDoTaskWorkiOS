@@ -7,14 +7,14 @@
 
 import Foundation
 
-public protocol IApiCient {
+public protocol IApiClient {
     func asyncRequest<T: Decodable>(endpoint: IEndpointProvider, responseModel: T.Type) async throws -> T
     func asyncUpload<T: Decodable>(endpoint: IEndpointProvider, responseModel: T.Type) async throws -> T
     func asyncDownload(endpoint: IEndpointProvider) async throws -> URL
     func asyncDownload(fileURL: URL) async throws -> URL
 }
 
-final public class ApiClient: IApiCient {
+final public class ApiClient: IApiClient {
     var session: URLSession {
         let configuration = URLSessionConfiguration.default
         configuration.waitsForConnectivity = true
