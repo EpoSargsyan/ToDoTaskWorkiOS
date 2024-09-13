@@ -10,7 +10,7 @@ import SnapKit
 import ToDoListInteractor
 import ToDoListEntity
 
-class ToDoListViewController: BaseViewController {
+final class ToDoListViewController: BaseViewController {
 
     var interactor: Interactor?
 
@@ -46,12 +46,19 @@ class ToDoListViewController: BaseViewController {
         return todos.filter { $0.completed }.count
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         Task {
             await interactor?.getTodos()
         }
+
+        makeButtonAction()
     }
 
     override func setupUI() {
@@ -153,6 +160,15 @@ class ToDoListViewController: BaseViewController {
         tableView.separatorStyle = .none
 
         tableView.register(ToDoListTableViewCell.self)
+    }
+
+    private func makeButtonAction() {
+        let newTaskAction = UIAction { [weak self] _ in
+            guard let navigationController = self?.navigationController else { return }
+            ToDoListRouter.showNewTaskViewController(in: navigationController)
+        }
+
+        newTaskButton.addAction(newTaskAction, for: .touchUpInside)
     }
 }
 

@@ -34,6 +34,9 @@
 		3B5E2A402C91C947008E5DB8 /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A3F2C91C947008E5DB8 /* TableView.swift */; };
 		3B5E2A482C930044008E5DB8 /* ToDoItemsCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A472C930044008E5DB8 /* ToDoItemsCounter.swift */; };
 		3B5E2A4A2C93984E008E5DB8 /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A492C93984E008E5DB8 /* StackView.swift */; };
+		3B5E2A4C2C942CD7008E5DB8 /* NewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A4B2C942CD7008E5DB8 /* NewTaskViewController.swift */; };
+		3B5E2A4F2C94332D008E5DB8 /* LargeInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A4E2C94332D008E5DB8 /* LargeInputField.swift */; };
+		3B5E2A512C9433B9008E5DB8 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A502C9433B9008E5DB8 /* TextView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +98,9 @@
 		3B5E2A3F2C91C947008E5DB8 /* TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
 		3B5E2A472C930044008E5DB8 /* ToDoItemsCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoItemsCounter.swift; sourceTree = "<group>"; };
 		3B5E2A492C93984E008E5DB8 /* StackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackView.swift; sourceTree = "<group>"; };
+		3B5E2A4B2C942CD7008E5DB8 /* NewTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskViewController.swift; sourceTree = "<group>"; };
+		3B5E2A4E2C94332D008E5DB8 /* LargeInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeInputField.swift; sourceTree = "<group>"; };
+		3B5E2A502C9433B9008E5DB8 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +207,7 @@
 				3B5E29CD2C906B0E008E5DB8 /* Cell */,
 				3B5E29832C90522E008E5DB8 /* ToDoListViewController.swift */,
 				3B5E2A352C91C4A2008E5DB8 /* ToDoListAssembly.swift */,
+				3B5E2A4B2C942CD7008E5DB8 /* NewTaskViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -261,6 +268,7 @@
 		3B5E2A432C92FFFE008E5DB8 /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				3B5E2A4D2C94331E008E5DB8 /* TextField */,
 				3B5E2A442C93000C008E5DB8 /* ToDoItemsCounter */,
 			);
 			path = Component;
@@ -272,6 +280,15 @@
 				3B5E2A472C930044008E5DB8 /* ToDoItemsCounter.swift */,
 			);
 			path = ToDoItemsCounter;
+			sourceTree = "<group>";
+		};
+		3B5E2A4D2C94331E008E5DB8 /* TextField */ = {
+			isa = PBXGroup;
+			children = (
+				3B5E2A4E2C94332D008E5DB8 /* LargeInputField.swift */,
+				3B5E2A502C9433B9008E5DB8 /* TextView.swift */,
+			);
+			path = TextField;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -423,9 +440,11 @@
 				3B5E2A3A2C91C770008E5DB8 /* BaseViewController.swift in Sources */,
 				3B5E2A402C91C947008E5DB8 /* TableView.swift in Sources */,
 				3B5E29BA2C905F8F008E5DB8 /* Label.swift in Sources */,
+				3B5E2A4F2C94332D008E5DB8 /* LargeInputField.swift in Sources */,
 				3B5E29E62C91C0F1008E5DB8 /* ToDoListRouter.swift in Sources */,
 				3B5E29CF2C906CF8008E5DB8 /* ToDoListTableViewCell.swift in Sources */,
 				3B5E2A362C91C4A2008E5DB8 /* ToDoListAssembly.swift in Sources */,
+				3B5E2A4C2C942CD7008E5DB8 /* NewTaskViewController.swift in Sources */,
 				3B5E2A3E2C91C8FB008E5DB8 /* ReusableView.swift in Sources */,
 				3B5E29842C90522E008E5DB8 /* ToDoListViewController.swift in Sources */,
 				3B5E29802C90522E008E5DB8 /* AppDelegate.swift in Sources */,
@@ -433,6 +452,7 @@
 				3B5E29822C90522E008E5DB8 /* SceneDelegate.swift in Sources */,
 				3B5E2A482C930044008E5DB8 /* ToDoItemsCounter.swift in Sources */,
 				3B5E298A2C90522E008E5DB8 /* ToDoList.xcdatamodeld in Sources */,
+				3B5E2A512C9433B9008E5DB8 /* TextView.swift in Sources */,
 				3B5E2A3C2C91C8E7008E5DB8 /* Setupable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -14,4 +14,11 @@ final class ToDoListRouter {
         let viewController = Presenter.presentToDoListViewController()
         navigationController.pushViewController(viewController, animated: true)
     }
+
+    static func showNewTaskViewController(in navigationController: UINavigationController) {
+        let viewController = Presenter.presentNewTaskViewController()
+        viewController.navigationItem.hidesBackButton = true
+        navigationController.navigationBar.isHidden = true
+        navigationController.pushViewController(viewController, animated: true)
+    }
 }

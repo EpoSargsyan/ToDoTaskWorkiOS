@@ -17,4 +17,9 @@ final class Presenter {
         viewController.interactor = assembler.resolver.resolve(IToDoInteractor.self)
         return viewController
     }
+
+    static func presentNewTaskViewController() -> NewTaskViewController {
+        let viewController = NewTaskViewController()
+        return viewController
+    }
 }
