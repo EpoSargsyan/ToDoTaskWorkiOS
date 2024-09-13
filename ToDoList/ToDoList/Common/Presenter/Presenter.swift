@@ -22,4 +22,11 @@ final class Presenter {
         let viewController = NewTaskViewController()
         return viewController
     }
+
+    static func presentEditToDoItemViewController(navigationModel: EditToDoItemNavigatioModel) -> EditToDoItemViewController {
+        let assembler = Assembler([ToDoListAssembly()])
+        let viewController = EditToDoItemViewController()
+        viewController.interactor = assembler.resolver.resolve(IEditToDoItemInteractor.self)
+        return viewController
+    }
 }

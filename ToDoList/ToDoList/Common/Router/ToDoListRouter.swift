@@ -21,4 +21,11 @@ final class ToDoListRouter {
         navigationController.navigationBar.isHidden = true
         navigationController.pushViewController(viewController, animated: true)
     }
+
+    static func showEditToDoItemViewController(in navigationController: UINavigationController, navigationModel: EditToDoItemNavigatioModel) {
+        let viewController = Presenter.presentEditToDoItemViewController(navigationModel: navigationModel)
+        viewController.navigationItem.hidesBackButton = true
+        navigationController.navigationBar.isHidden = true
+        navigationController.pushViewController(viewController, animated: true)
+    }
 }

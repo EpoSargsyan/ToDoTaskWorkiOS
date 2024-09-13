@@ -37,6 +37,7 @@
 		3B5E2A4C2C942CD7008E5DB8 /* NewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A4B2C942CD7008E5DB8 /* NewTaskViewController.swift */; };
 		3B5E2A4F2C94332D008E5DB8 /* LargeInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A4E2C94332D008E5DB8 /* LargeInputField.swift */; };
 		3B5E2A512C9433B9008E5DB8 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A502C9433B9008E5DB8 /* TextView.swift */; };
+		3B5E2A532C944FC0008E5DB8 /* EditToDoItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A522C944FC0008E5DB8 /* EditToDoItemViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +102,7 @@
 		3B5E2A4B2C942CD7008E5DB8 /* NewTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskViewController.swift; sourceTree = "<group>"; };
 		3B5E2A4E2C94332D008E5DB8 /* LargeInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeInputField.swift; sourceTree = "<group>"; };
 		3B5E2A502C9433B9008E5DB8 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
+		3B5E2A522C944FC0008E5DB8 /* EditToDoItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditToDoItemViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,6 +210,7 @@
 				3B5E29832C90522E008E5DB8 /* ToDoListViewController.swift */,
 				3B5E2A352C91C4A2008E5DB8 /* ToDoListAssembly.swift */,
 				3B5E2A4B2C942CD7008E5DB8 /* NewTaskViewController.swift */,
+				3B5E2A522C944FC0008E5DB8 /* EditToDoItemViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -449,6 +452,7 @@
 				3B5E29842C90522E008E5DB8 /* ToDoListViewController.swift in Sources */,
 				3B5E29802C90522E008E5DB8 /* AppDelegate.swift in Sources */,
 				3B5E2A4A2C93984E008E5DB8 /* StackView.swift in Sources */,
+				3B5E2A532C944FC0008E5DB8 /* EditToDoItemViewController.swift in Sources */,
 				3B5E29822C90522E008E5DB8 /* SceneDelegate.swift in Sources */,
 				3B5E2A482C930044008E5DB8 /* ToDoItemsCounter.swift in Sources */,
 				3B5E298A2C90522E008E5DB8 /* ToDoList.xcdatamodeld in Sources */,

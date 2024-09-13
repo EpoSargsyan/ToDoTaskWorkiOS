@@ -190,6 +190,10 @@ extension ToDoListViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //MARK: Get the current cell from coreData
+    }
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 130
     }
@@ -197,8 +201,6 @@ extension ToDoListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: "") { [weak self] action, view, completionHandler in
             //MARK: Delete from CoreData
-//            guard let topicId = self?.topics[indexPath.row].id else { return }
-//            self?.viewModel?.removeBookmark(by: topicId)
             tableView.deleteRows(at: [indexPath], with: .none)
             completionHandler(true)
         }
