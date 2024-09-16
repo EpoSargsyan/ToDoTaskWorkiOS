@@ -11,6 +11,7 @@ import ToDoListInteractor
 import ToDoListEntity
 
 final class ToDoListViewController: BaseViewController {
+    let context = CoreDataManager.shared.context
 
     var interactor: Interactor?
 
@@ -38,8 +39,8 @@ final class ToDoListViewController: BaseViewController {
                                              axis: .horizontal,
                                              spacing: 16)
 
-    private var todos: [TodoDetails] {
-        return interactor?.result?.todos ?? []
+    private var todos: [ToDoItemCoreData] {
+        return interactor?.todosDB ?? []
     }
 
     private var completedCount: Int {
@@ -49,13 +50,17 @@ final class ToDoListViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
+        Task {
+            await interactor?.loadTodosfromDB(context: self.context)
+        }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         Task {
-            await interactor?.getTodos()
+            await interactor?.getTodos(context: context)
+            await interactor?.loadTodosfromDB(context: context)
         }
 
         makeButtonAction()
@@ -148,7 +153,7 @@ final class ToDoListViewController: BaseViewController {
             self?.tableView.reloadData()
         }.store(in: &cancellables)
 
-        interactor?.errorEvent.sink { error in
+        (interactor as? BaseInteractor)?.errorEvent.sink { error in
             print(error.localizedDescription)
         }.store(in: &cancellables)
     }
@@ -184,8 +189,7 @@ extension ToDoListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: ToDoListTableViewCell = tableView.dequeueReusableCell(for: indexPath)
 
-        let model = ToDoItemPresentationModel(todo: todos[indexPath.row].todo,
-                                              completed: todos[indexPath.row].completed)
+        let model = ToDoItemPresentationModel(todoModel: todos[indexPath.row])
         cell.setup(with: model)
         return cell
     }
@@ -200,7 +204,9 @@ extension ToDoListViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: "") { [weak self] action, view, completionHandler in
-            //MARK: Delete from CoreData
+            guard let todo = self?.interactor?.todosDB[indexPath.row] else { return }
+            guard let context = self?.context else { return }
+            self?.interactor?.delteTodoDB(context: context, item: todo)
             tableView.deleteRows(at: [indexPath], with: .none)
             completionHandler(true)
         }

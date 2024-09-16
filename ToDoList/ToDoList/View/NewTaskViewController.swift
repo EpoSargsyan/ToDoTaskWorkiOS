@@ -7,8 +7,17 @@
 
 import UIKit
 import SnapKit
+import ToDoListInteractor
+import ToDoListEntity
 
 final class NewTaskViewController: BaseViewController {
+
+    var interactor: Interactor?
+
+    private var context = CoreDataManager.shared.context
+
+    private var todo: ToDoItemCoreData!
+
     private let saveButton = UIButton(type: .system)
 
     private let titleTextField = LargeInputField(labelText: "Title",
@@ -41,6 +50,10 @@ final class NewTaskViewController: BaseViewController {
         view.addSubview(startingDateTextField)
         view.addSubview(endingDateTextField)
         view.addSubview(divider)
+
+        todo = ToDoItemCoreData(context: context)
+        todo.completed = false
+        todo.id = UUID()
 
         saveButton.setTitle("Save", for: .normal)
         saveButton.setTitleColor(.black, for: .normal)
@@ -143,9 +156,11 @@ final class NewTaskViewController: BaseViewController {
     @objc func doneButtonTapped() {
         if isStartingDate {
             startingDateTextField.text = dateFormatter.string(from: datePicker.date)
+            todo.startingDate = startingDateTextField.text
             view.endEditing(true)
         } else {
             endingDateTextField.text = dateFormatter.string(from: datePicker.date)
+            todo.endingDate = endingDateTextField.text
             view.endEditing(true)
         }
     }
@@ -156,10 +171,12 @@ final class NewTaskViewController: BaseViewController {
                                           message: "Do you want to save your changes?",
                                           preferredStyle: .alert)
 
-            alert.addAction(UIAlertAction(title: "Yes", style: .default) { _ in
-
-                // Save in CoreData
-                self?.navigationController?.popViewController(animated: true)
+            alert.addAction(UIAlertAction(title: "Yes", style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                Task {
+                    await self.interactor?.setTodoDB(context: self.context, item: self.todo)
+                }
+                navigationController?.popViewController(animated: true)
             })
 
             alert.addAction(UIAlertAction(title: "No", style: .cancel) { _ in
@@ -173,6 +190,10 @@ final class NewTaskViewController: BaseViewController {
     }
 }
 
+extension NewTaskViewController: IInteractorableController {
+    typealias Interactor = INewTaskInteractor
+}
+
 extension NewTaskViewController: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         switch textField {
@@ -184,5 +205,16 @@ extension NewTaskViewController: UITextFieldDelegate {
             print("Fatal")
         }
         return true
+    }
+
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        switch textField {
+        case titleTextField:
+            todo.todo = textField.text
+        case descriptionTextField:
+            todo.team = textField.text
+        default:
+            print("Fatal")
+        }
     }
 }

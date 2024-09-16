@@ -17,7 +17,7 @@ public protocol IEditToDoItemInteractor {
     var endingDate: String { get }
 }
 
-public class EditToDoItemInteractor: IEditToDoItemInteractor {
+public class EditToDoItemInteractor: BaseInteractor, IEditToDoItemInteractor {
 
     private let editToDoItemService: IEditToDoItemService
 

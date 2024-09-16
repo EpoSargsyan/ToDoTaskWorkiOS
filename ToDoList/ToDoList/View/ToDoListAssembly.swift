@@ -20,11 +20,13 @@ final class ToDoListAssembly: Assembly {
     func registerViewModel(in container: Container) {
         container.autoregister(IToDoInteractor.self, initializer: ToDoInteractor.init)
         container.autoregister(IEditToDoItemInteractor.self, initializer: EditToDoItemInteractor.init)
+        container.autoregister(INewTaskInteractor.self, initializer: NewTaskInteractor.init)
     }
 
     func registerViewModelServices(in container: Container) {
         container.autoregister(IToDoService.self, initializer: ToDoService.init)
         container.autoregister(IEditToDoItemService.self, initializer: EditToDoItemService.init)
+        container.autoregister(ICoreDataService.self, initializer: CoreDataService.init)
         container.autoregister(IApiClient.self, initializer: ApiClient.init)
     }
 }

@@ -17,13 +17,13 @@ class ToDoListTableViewCell: UITableViewCell, IReusableView {
     private let titleLabel = UILabel(text: "",
                                      textColor: .black,
                                      font: UIFont.systemFont(ofSize: 20))
-    private let descriptionLabel = UILabel(text: "jhacbahjbcasjkbcas",
+    private let descriptionLabel = UILabel(text: "",
                                            textColor: .gray,
                                            font: UIFont.systemFont(ofSize: 16))
 
     private let divider = UIView()
 
-    private let dateLabel = UILabel(text: "jjzzoaoaoaoaoao",
+    private let dateLabel = UILabel(text: "",
                                     textColor: .gray,
                                     font: UIFont.systemFont(ofSize: 18))
 
@@ -126,9 +126,11 @@ extension ToDoListTableViewCell: ISetupable {
     typealias SetupModel = ToDoItemPresentationModel
 
     func setup(with model: ToDoItemPresentationModel) {
-        titleLabel.text = model.todo
-        isCompleted = model.completed
-        if model.completed {
+        titleLabel.text = model.todoModel.todo
+        isCompleted = model.todoModel.completed
+        descriptionLabel.text = model.todoModel.team ?? "Team"
+        dateLabel.text = (model.todoModel.startingDate ?? "Today 12:00") + " - " + (model.todoModel.endingDate ?? "Today 13:00")
+        if isCompleted {
             titleLabel.strikeThroughText()
         }
         setupUI()

@@ -21,4 +21,7 @@ public struct TodoDetails: Codable {
     public let todo: String
     public let completed: Bool
     public let userId: Int
+    public let startingDate: String?
+    public let endingDate: String?
+    public let teamName: String?
 }

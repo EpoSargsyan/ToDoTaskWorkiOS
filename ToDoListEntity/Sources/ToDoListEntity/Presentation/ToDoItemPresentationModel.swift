@@ -8,11 +8,9 @@
 import Foundation
 
 public struct ToDoItemPresentationModel {
-    public let todo: String
-    public let completed: Bool
+    public let todoModel: ToDoItemCoreData
 
-    public init(todo: String, completed: Bool) {
-        self.todo = todo
-        self.completed = completed
+    public init(todoModel: ToDoItemCoreData) {
+        self.todoModel = todoModel
     }
 }
