@@ -8,27 +8,35 @@
 import UIKit
 import SnapKit
 import ToDoListInteractor
+import ToDoListEntity
 
 final class EditToDoItemViewController: BaseViewController {
+    let context = CoreDataManager.shared.context
 
     var interactor: Interactor?
+
+    private let titleLabel = UILabel(text: "Update Task",
+                                     textColor: .black,
+                                     font: UIFont.systemFont(ofSize: 24))
 
     private let saveButton = UIButton(type: .system)
 
     private let titleTextField = LargeInputField(labelText: "Title",
                                                  placeholder: "Your ToDo...")
-    private let descriptionTextField = UITextField()
+    private let descriptionTextField = TextField(placeholder: "Team name...")
 
     private let datePicker = UIDatePicker()
     private var dateFormatter = DateFormatter()
 
-    private let startingDateTextField = UITextField()
-    private let endingDateTextField = UITextField()
+    private let startingDateTextField = TextField(placeholder: "Starting date...")
+    private let endingDateTextField = TextField(placeholder: "Ending date...")
 
     private let divider = UIView()
 
     private var toolBar = UIToolbar()
     private var isStartingDate: Bool = true
+
+    private var updatedTodo: ToDoItemCoreData!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +47,7 @@ final class EditToDoItemViewController: BaseViewController {
         super.setupUI()
         view.backgroundColor = .white
 
+        view.addSubview(titleLabel)
         view.addSubview(saveButton)
         view.addSubview(titleTextField)
         view.addSubview(descriptionTextField)
@@ -55,24 +64,16 @@ final class EditToDoItemViewController: BaseViewController {
 
         titleTextField.isUserInteractionEnabled = true
 
-        descriptionTextField.placeholder = "Team name..."
-        descriptionTextField.backgroundColor = .systemGray4
-        descriptionTextField.layer.cornerRadius = 16
-
         startingDateTextField.isUserInteractionEnabled = true
         startingDateTextField.inputAccessoryView = toolBar
         startingDateTextField.inputView = datePicker
-        startingDateTextField.placeholder = "Starting date"
-        startingDateTextField.backgroundColor = .systemGray4
-        startingDateTextField.layer.cornerRadius = 16
 
         endingDateTextField.isUserInteractionEnabled = true
         endingDateTextField.inputAccessoryView = toolBar
         endingDateTextField.inputView = datePicker
-        endingDateTextField.placeholder = "Ending date"
-        endingDateTextField.backgroundColor = .systemGray4
-        endingDateTextField.layer.cornerRadius = 16
 
+        titleTextField.textView.delegate = self
+        descriptionTextField.delegate = self
         startingDateTextField.delegate = self
         endingDateTextField.delegate = self
 
@@ -82,11 +83,21 @@ final class EditToDoItemViewController: BaseViewController {
 
     override func setupInteractor() {
         super.setupInteractor()
+        updatedTodo = interactor?.todo
+        titleTextField.textView.text = updatedTodo.todo
+        descriptionTextField.text = updatedTodo.team
+        startingDateTextField.text = updatedTodo.startingDate
+        endingDateTextField.text = updatedTodo.endingDate
     }
 
     private func setupContraints() {
-        saveButton.snp.makeConstraints { make in
+        titleLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(60)
+        }
+
+        saveButton.snp.makeConstraints { make in
+            make.centerY.equalTo(titleLabel.snp.centerY)
             make.leading.equalToSuperview().offset(16)
             make.width.equalTo(100)
             make.height.equalTo(48)
@@ -147,33 +158,44 @@ final class EditToDoItemViewController: BaseViewController {
     @objc func doneButtonTapped() {
         if isStartingDate {
             startingDateTextField.text = dateFormatter.string(from: datePicker.date)
+            updatedTodo.startingDate = startingDateTextField.text
             view.endEditing(true)
         } else {
             endingDateTextField.text = dateFormatter.string(from: datePicker.date)
+            updatedTodo.endingDate = endingDateTextField.text
             view.endEditing(true)
         }
     }
 
     private func makeButtonAction() {
         let saveAction = UIAction { [weak self] _ in
+            guard let self = self else { return }
             let alert = UIAlertController(title: "Unsaved Changes",
                                           message: "Do you want to save your changes?",
                                           preferredStyle: .alert)
 
-            alert.addAction(UIAlertAction(title: "Yes", style: .default) { _ in
+            let saveChanges = UIAlertAction(title: "Yes", style: .default) { _ in
+                self.interactor?.saveChanges(context: self.context)
+                self.navigationController?.popViewController(animated: true)
+            }
 
-                // Save in CoreData
-                self?.navigationController?.popViewController(animated: true)
-            })
+            let discardChanges = UIAlertAction(title: "No", style: .cancel) { _ in
+                self.navigationController?.popViewController(animated: true)
+            }
 
-            alert.addAction(UIAlertAction(title: "No", style: .cancel) { _ in
-                self?.navigationController?.popViewController(animated: true)
-            })
+            alert.addAction(saveChanges)
+            alert.addAction(discardChanges)
 
-            self?.present(alert, animated: true, completion: nil)
+            self.present(alert, animated: true, completion: nil)
         }
 
         saveButton.addAction(saveAction, for: .touchUpInside)
+    }
+}
+
+extension EditToDoItemViewController: UITextViewDelegate {
+    func textViewDidEndEditing(_ textView: UITextView) {
+        updatedTodo.todo = textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
@@ -189,8 +211,19 @@ extension EditToDoItemViewController: UITextFieldDelegate {
         case endingDateTextField:
             createToolbar(isStartingDate: false)
         default:
-            print("Fatal")
+            print("Nope")
         }
+        return true
+    }
+
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if textField == descriptionTextField {
+            updatedTodo.team = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        descriptionTextField.resignFirstResponder()
         return true
     }
 }

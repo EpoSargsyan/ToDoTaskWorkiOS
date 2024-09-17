@@ -47,6 +47,10 @@ final class ToDoItemsCounter: UIView {
         label.backgroundColor = .gray
     }
 
+    public func setLabelText(text: String) {
+        label.text = text
+    }
+
     private func makeButtonAction() {
         let buttonAction = UIAction { [weak self] _ in
             self?.buttonTappedSubject.send()

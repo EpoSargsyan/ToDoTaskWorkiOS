@@ -19,4 +19,3 @@ class CoreDataManager {
 
     private init() { }
 }
-

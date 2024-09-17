@@ -8,15 +8,9 @@
 import Foundation
 
 public struct EditToDoItemNavigatioModel {
-    public let title: String
-    public let description: String
-    public let startingDate: String
-    public let endingDate: String
+    public let todo: ToDoItemCoreData
 
-    public init(title: String, description: String, startingDate: String, endingDate: String) {
-        self.title = title
-        self.description = description
-        self.startingDate = startingDate
-        self.endingDate = endingDate
+    public init(todo: ToDoItemCoreData) {
+        self.todo = todo
     }
 }

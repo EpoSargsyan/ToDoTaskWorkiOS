@@ -19,14 +19,17 @@ final class Presenter {
     }
 
     static func presentNewTaskViewController() -> NewTaskViewController {
+        let assembler = Assembler([ToDoListAssembly()])
         let viewController = NewTaskViewController()
+        viewController.interactor = assembler.resolver.resolve(INewTaskInteractor.self)
         return viewController
     }
 
     static func presentEditToDoItemViewController(navigationModel: EditToDoItemNavigatioModel) -> EditToDoItemViewController {
         let assembler = Assembler([ToDoListAssembly()])
         let viewController = EditToDoItemViewController()
-        viewController.interactor = assembler.resolver.resolve(IEditToDoItemInteractor.self)
+        viewController.interactor = assembler.resolver.resolve(IEditToDoItemInteractor.self,
+                                                               argument: navigationModel)
         return viewController
     }
 }

@@ -43,16 +43,23 @@ final class ToDoListViewController: BaseViewController {
         return interactor?.todosDB ?? []
     }
 
-    private var completedCount: Int {
-        return todos.filter { $0.completed }.count
+    private var completedTodos: [ToDoItemCoreData] {
+        return todos.filter { $0.completed }
     }
+
+    private var notCompletedTodos: [ToDoItemCoreData] {
+        return todos.filter { !$0.completed }
+    }
+
+    private var drawingTodos: [ToDoItemCoreData] = []
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        interactor?.loadTodosfromDB(context: self.context)
+        drawingTodos = todos
+        allItems.setTappedState()
+        setCountsForLabels()
         tableView.reloadData()
-        Task {
-            await interactor?.loadTodosfromDB(context: self.context)
-        }
     }
 
     override func viewDidLoad() {
@@ -60,8 +67,8 @@ final class ToDoListViewController: BaseViewController {
 
         Task {
             await interactor?.getTodos(context: context)
-            await interactor?.loadTodosfromDB(context: context)
         }
+        interactor?.loadTodosfromDB(context: context)
 
         makeButtonAction()
     }
@@ -77,6 +84,7 @@ final class ToDoListViewController: BaseViewController {
         view.addSubview(stackView)
         view.addSubview(tableView)
 
+        descriptionLabel.text = getCurrentDate()
         stackView.distribution = .fillProportionally
         stackView.alignment = .center
 
@@ -84,19 +92,27 @@ final class ToDoListViewController: BaseViewController {
             self?.allItems.setTappedState()
             self?.openItems.setNormalState()
             self?.closedItems.setNormalState()
+            self?.drawingTodos = self?.todos ?? []
+            self?.tableView.reloadData()
         }.store(in: &cancellables)
 
         openItems.buttonTappedSubject.sink { [weak self] _ in
             self?.allItems.setNormalState()
             self?.openItems.setTappedState()
             self?.closedItems.setNormalState()
+            self?.drawingTodos = self?.notCompletedTodos ?? []
+            self?.tableView.reloadData()
         }.store(in: &cancellables)
 
         closedItems.buttonTappedSubject.sink { [weak self] _ in
             self?.allItems.setNormalState()
             self?.openItems.setNormalState()
             self?.closedItems.setTappedState()
+            self?.drawingTodos = self?.completedTodos ?? []
+            self?.tableView.reloadData()
         }.store(in: &cancellables)
+
+        drawingTodos = todos
 
         setupConstraints()
         setupTableView()
@@ -138,18 +154,31 @@ final class ToDoListViewController: BaseViewController {
     override func setupInteractor() {
         super.setupInteractor()
 
+        interactor?.updateCompletedSubject.sink { [weak self] (id, isCompleted) in
+            let todo = self?.interactor?.todosDB.first { toDoItemCoreData in
+                toDoItemCoreData.id == id
+            }
+            todo?.completed = isCompleted
+            if let context = self?.context {
+                self?.interactor?.saveChanges(context: context)
+            }
+        }.store(in: &cancellables)
+
         interactor?.todosSuccessSubject.sink { [weak self] success in
+
+            let completedCount = self?.completedTodos.count
+            let notCompletedCount = self?.notCompletedTodos.count
 
             self?.allItems.setup(with: ToDoItemsCountPresentationModel(title: "All",
                                                                        count: self?.todos.count ?? 0))
 
             self?.openItems.setup(with: ToDoItemsCountPresentationModel(title: "Open",
-                                                                        count: self?.completedCount ?? 0))
-
-            let closedCount = (self?.todos.count ?? 0) - (self?.completedCount ?? 0)
+                                                                        count: notCompletedCount ?? 0))
 
             self?.closedItems.setup(with: ToDoItemsCountPresentationModel(title: "Closed",
-                                                                    count: closedCount))
+                                                                    count: completedCount ?? 0))
+
+            self?.allItems.setTappedState()
             self?.tableView.reloadData()
         }.store(in: &cancellables)
 
@@ -175,6 +204,21 @@ final class ToDoListViewController: BaseViewController {
 
         newTaskButton.addAction(newTaskAction, for: .touchUpInside)
     }
+
+    private func getCurrentDate() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE, dd MMMM"
+
+        let currentDate = Date()
+        let formattedDate = dateFormatter.string(from: currentDate)
+        return formattedDate
+    }
+
+    private func setCountsForLabels() {
+        allItems.setLabelText(text: "\(todos.count)")
+        openItems.setLabelText(text: "\(notCompletedTodos.count)")
+        closedItems.setLabelText(text: "\(completedTodos.count)")
+    }
 }
 
 extension ToDoListViewController: IInteractorableController {
@@ -183,19 +227,24 @@ extension ToDoListViewController: IInteractorableController {
 
 extension ToDoListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return todos.count
+        return drawingTodos.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: ToDoListTableViewCell = tableView.dequeueReusableCell(for: indexPath)
-
-        let model = ToDoItemPresentationModel(todoModel: todos[indexPath.row])
-        cell.setup(with: model)
+        if let updateCompletedSubject = interactor?.updateCompletedSubject {
+            let model = ToDoItemPresentationModel(todoModel: drawingTodos[indexPath.row], updateCompletedSubject: updateCompletedSubject)
+            cell.setup(with: model)
+        }
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //MARK: Get the current cell from coreData
+        if let navigationController = self.navigationController {
+            let model = EditToDoItemNavigatioModel(todo: drawingTodos[indexPath.row])
+            ToDoListRouter.showEditToDoItemViewController(in: navigationController,
+                                                          navigationModel: model)
+        }
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -204,10 +253,12 @@ extension ToDoListViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: "") { [weak self] action, view, completionHandler in
-            guard let todo = self?.interactor?.todosDB[indexPath.row] else { return }
+            guard let todo = self?.drawingTodos[indexPath.row] else { return }
             guard let context = self?.context else { return }
+            self?.drawingTodos.remove(at: indexPath.row)
             self?.interactor?.delteTodoDB(context: context, item: todo)
             tableView.deleteRows(at: [indexPath], with: .none)
+            self?.setCountsForLabels()
             completionHandler(true)
         }
         deleteAction.image = UIImage(systemName: "trash")

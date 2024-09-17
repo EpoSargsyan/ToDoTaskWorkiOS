@@ -39,6 +39,7 @@
 		3B5E2A512C9433B9008E5DB8 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A502C9433B9008E5DB8 /* TextView.swift */; };
 		3B5E2A532C944FC0008E5DB8 /* EditToDoItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A522C944FC0008E5DB8 /* EditToDoItemViewController.swift */; };
 		3B5E2A792C96D842008E5DB8 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A782C96D842008E5DB8 /* CoreDataManager.swift */; };
+		3B5E2A7B2C98FCA6008E5DB8 /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E2A7A2C98FCA6008E5DB8 /* TextField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +106,7 @@
 		3B5E2A502C9433B9008E5DB8 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 		3B5E2A522C944FC0008E5DB8 /* EditToDoItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditToDoItemViewController.swift; sourceTree = "<group>"; };
 		3B5E2A782C96D842008E5DB8 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		3B5E2A7A2C98FCA6008E5DB8 /* TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -293,6 +295,7 @@
 			children = (
 				3B5E2A4E2C94332D008E5DB8 /* LargeInputField.swift */,
 				3B5E2A502C9433B9008E5DB8 /* TextView.swift */,
+				3B5E2A7A2C98FCA6008E5DB8 /* TextField.swift */,
 			);
 			path = TextField;
 			sourceTree = "<group>";
@@ -450,6 +453,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B5E29E92C91C135008E5DB8 /* Presenter.swift in Sources */,
+				3B5E2A7B2C98FCA6008E5DB8 /* TextField.swift in Sources */,
 				3B5E29D12C906DAA008E5DB8 /* Button.swift in Sources */,
 				3B5E2A3A2C91C770008E5DB8 /* BaseViewController.swift in Sources */,
 				3B5E2A402C91C947008E5DB8 /* TableView.swift in Sources */,

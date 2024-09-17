@@ -9,29 +9,34 @@ import Foundation
 import Combine
 import ToDoListEntity
 import ToDoListNetworking
+import CoreData
 
 public protocol IEditToDoItemInteractor {
-    var title: String { get }
-    var description: String { get }
-    var startingDate: String { get }
-    var endingDate: String { get }
+    var todo: ToDoItemCoreData { get }
+    func saveChanges(context: NSManagedObjectContext)
 }
 
 public class EditToDoItemInteractor: BaseInteractor, IEditToDoItemInteractor {
 
+    private let coreDataService: ICoreDataService
     private let editToDoItemService: IEditToDoItemService
 
-    public var title: String = ""
-    public var description: String = ""
-    public var startingDate: String = ""
-    public var endingDate: String = ""
+    public var todo: ToDoItemCoreData
 
     public init(editToDoItemService: IEditToDoItemService,
-                navigationModel: EditToDoItemNavigatioModel) {
+                navigationModel: EditToDoItemNavigatioModel,
+                coreDataService: ICoreDataService) {
         self.editToDoItemService = editToDoItemService
-        self.title = navigationModel.title
-        self.description = navigationModel.description
-        self.startingDate = navigationModel.startingDate
-        self.endingDate = navigationModel.endingDate
+        self.todo = navigationModel.todo
+        self.coreDataService = coreDataService
+    }
+
+    @MainActor
+    public func saveChanges(context: NSManagedObjectContext) {
+        do {
+            try coreDataService.saveChanges(context: context)
+        } catch {
+            errorEvent.send(error)
+        }
     }
 }

@@ -11,24 +11,27 @@ import ToDoListInteractor
 import ToDoListEntity
 
 final class NewTaskViewController: BaseViewController {
+    private var context = CoreDataManager.shared.context
 
     var interactor: Interactor?
 
-    private var context = CoreDataManager.shared.context
-
     private var todo: ToDoItemCoreData!
+
+    private let titleLabel = UILabel(text: "New Task",
+                                     textColor: .black,
+                                     font: UIFont.systemFont(ofSize: 24))
 
     private let saveButton = UIButton(type: .system)
 
     private let titleTextField = LargeInputField(labelText: "Title",
                                                  placeholder: "Your ToDo...")
-    private let descriptionTextField = UITextField()
+    private let descriptionTextField = TextField(placeholder: "Team name...")
 
     private let datePicker = UIDatePicker()
     private var dateFormatter = DateFormatter()
 
-    private let startingDateTextField = UITextField()
-    private let endingDateTextField = UITextField()
+    private let startingDateTextField = TextField(placeholder: "Starting date")
+    private let endingDateTextField = TextField(placeholder: "Ending date")
 
     private let divider = UIView()
 
@@ -44,6 +47,7 @@ final class NewTaskViewController: BaseViewController {
         super.setupUI()
         view.backgroundColor = .white
 
+        view.addSubview(titleLabel)
         view.addSubview(saveButton)
         view.addSubview(titleTextField)
         view.addSubview(descriptionTextField)
@@ -62,26 +66,16 @@ final class NewTaskViewController: BaseViewController {
 
         divider.backgroundColor = .gray
 
-        titleTextField.isUserInteractionEnabled = true
-
-        descriptionTextField.placeholder = "Team name..."
-        descriptionTextField.backgroundColor = .systemGray4
-        descriptionTextField.layer.cornerRadius = 16
-
         startingDateTextField.isUserInteractionEnabled = true
         startingDateTextField.inputAccessoryView = toolBar
         startingDateTextField.inputView = datePicker
-        startingDateTextField.placeholder = "Starting date"
-        startingDateTextField.backgroundColor = .systemGray4
-        startingDateTextField.layer.cornerRadius = 16
 
         endingDateTextField.isUserInteractionEnabled = true
         endingDateTextField.inputAccessoryView = toolBar
         endingDateTextField.inputView = datePicker
-        endingDateTextField.placeholder = "Ending date"
-        endingDateTextField.backgroundColor = .systemGray4
-        endingDateTextField.layer.cornerRadius = 16
 
+        titleTextField.textView.delegate = self
+        descriptionTextField.delegate = self
         startingDateTextField.delegate = self
         endingDateTextField.delegate = self
 
@@ -94,8 +88,13 @@ final class NewTaskViewController: BaseViewController {
     }
 
     private func setupContraints() {
-        saveButton.snp.makeConstraints { make in
+        titleLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(60)
+        }
+
+        saveButton.snp.makeConstraints { make in
+            make.centerY.equalTo(titleLabel.snp.centerY)
             make.leading.equalToSuperview().offset(16)
             make.width.equalTo(100)
             make.height.equalTo(48)
@@ -167,23 +166,24 @@ final class NewTaskViewController: BaseViewController {
 
     private func makeButtonAction() {
         let saveAction = UIAction { [weak self] _ in
+            guard let self = self else { return }
             let alert = UIAlertController(title: "Unsaved Changes",
                                           message: "Do you want to save your changes?",
                                           preferredStyle: .alert)
 
-            alert.addAction(UIAlertAction(title: "Yes", style: .default) { [weak self] _ in
-                guard let self = self else { return }
-                Task {
-                    await self.interactor?.setTodoDB(context: self.context, item: self.todo)
-                }
-                navigationController?.popViewController(animated: true)
-            })
+            let saveChanges = UIAlertAction(title: "Yes", style: .default) { _ in
+                self.interactor?.saveChanges(context: self.context)
+                self.navigationController?.popViewController(animated: true)
+            }
 
-            alert.addAction(UIAlertAction(title: "No", style: .cancel) { _ in
-                self?.navigationController?.popViewController(animated: true)
-            })
+            let discardChanges = UIAlertAction(title: "No", style: .cancel) { _ in
+                self.navigationController?.popViewController(animated: true)
+            }
 
-            self?.present(alert, animated: true, completion: nil)
+            alert.addAction(saveChanges)
+            alert.addAction(discardChanges)
+
+            self.present(alert, animated: true, completion: nil)
         }
 
         saveButton.addAction(saveAction, for: .touchUpInside)
@@ -194,6 +194,12 @@ extension NewTaskViewController: IInteractorableController {
     typealias Interactor = INewTaskInteractor
 }
 
+extension NewTaskViewController: UITextViewDelegate {
+    func textViewDidEndEditing(_ textView: UITextView) {
+        todo.todo = textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
 extension NewTaskViewController: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         switch textField {
@@ -202,19 +208,19 @@ extension NewTaskViewController: UITextFieldDelegate {
         case endingDateTextField:
             createToolbar(isStartingDate: false)
         default:
-            print("Fatal")
+            print("Nope")
         }
         return true
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        switch textField {
-        case titleTextField:
-            todo.todo = textField.text
-        case descriptionTextField:
-            todo.team = textField.text
-        default:
-            print("Fatal")
+        if textField == descriptionTextField {
+            todo.team = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         }
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        descriptionTextField.resignFirstResponder()
+        return true
     }
 }

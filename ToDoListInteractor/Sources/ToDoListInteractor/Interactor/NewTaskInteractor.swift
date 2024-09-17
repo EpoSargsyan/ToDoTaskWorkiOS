@@ -10,7 +10,7 @@ import ToDoListEntity
 import CoreData
 
 public protocol INewTaskInteractor {
-    func setTodoDB(context: NSManagedObjectContext, item: ToDoItemCoreData) async
+    func saveChanges(context: NSManagedObjectContext)
 }
 
 public class NewTaskInteractor: BaseInteractor, INewTaskInteractor {
@@ -22,12 +22,11 @@ public class NewTaskInteractor: BaseInteractor, INewTaskInteractor {
     }
 
     @MainActor
-    public func setTodoDB(context: NSManagedObjectContext, item: ToDoItemCoreData) async {
+    public func saveChanges(context: NSManagedObjectContext) {
         do {
-            try await coreDataService.setItem(context: context, item: item)
+            try coreDataService.saveChanges(context: context)
         } catch {
             errorEvent.send(error)
         }
     }
 }
-

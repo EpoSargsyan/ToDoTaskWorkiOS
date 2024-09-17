@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import ToDoListEntity
+import Combine
 
 class ToDoListTableViewCell: UITableViewCell, IReusableView {
     private let itemView = UIView()
@@ -27,9 +28,17 @@ class ToDoListTableViewCell: UITableViewCell, IReusableView {
                                     textColor: .gray,
                                     font: UIFont.systemFont(ofSize: 18))
 
-    public var isCompleted: Bool = false
+    private var isCompleted: Bool = false
 
-    private var width: CGFloat = 0
+    private var id = UUID()
+
+    private var updateCompletedSubject = PassthroughSubject<(UUID, Bool), Never>()
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        titleLabel.removeStrikethroughText()
+        checkBox.removeTarget(nil, action: nil, for: .allEvents)
+    }
 
     private func setupUI() {
         self.backgroundColor = .clear
@@ -51,9 +60,11 @@ class ToDoListTableViewCell: UITableViewCell, IReusableView {
         if isCompleted {
             checkBox.backgroundColor = .cyan
             checkBox.setImage(UIImage(systemName: "checkmark"), for: .normal)
+            titleLabel.strikeThroughText()
         } else {
             checkBox.backgroundColor = .white
             checkBox.setImage(nil, for: .normal)
+            titleLabel.removeStrikethroughText()
         }
         checkBox.layer.cornerRadius = 12
         checkBox.layer.borderWidth = 1
@@ -105,16 +116,17 @@ class ToDoListTableViewCell: UITableViewCell, IReusableView {
     private func makeButtonAction() {
         let checkBoxAction = UIAction { [weak self] _ in
             guard let self = self else { return }
-            //MARK: Poxel hamel bazai mejiny
             isCompleted.toggle()
             if isCompleted {
                 titleLabel.strikeThroughText()
                 checkBox.backgroundColor = .cyan
                 checkBox.setImage(UIImage(systemName: "checkmark"), for: .normal)
+                updateCompletedSubject.send((id, true))
             } else {
                 titleLabel.removeStrikethroughText()
                 checkBox.backgroundColor = .white
                 checkBox.setImage(nil, for: .normal)
+                updateCompletedSubject.send((id, false))
             }
         }
 
@@ -126,13 +138,12 @@ extension ToDoListTableViewCell: ISetupable {
     typealias SetupModel = ToDoItemPresentationModel
 
     func setup(with model: ToDoItemPresentationModel) {
+        id = model.todoModel.id!
+        updateCompletedSubject = model.updateCompletedSubject
         titleLabel.text = model.todoModel.todo
         isCompleted = model.todoModel.completed
         descriptionLabel.text = model.todoModel.team ?? "Team"
         dateLabel.text = (model.todoModel.startingDate ?? "Today 12:00") + " - " + (model.todoModel.endingDate ?? "Today 13:00")
-        if isCompleted {
-            titleLabel.strikeThroughText()
-        }
         setupUI()
         makeButtonAction()
     }
